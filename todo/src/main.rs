@@ -1,11 +1,12 @@
 mod db;
 mod todo;
+mod config;
 
 use clap::Parser;
 use db::db::Db;
 use std::io::{self, Write};
-use prettytable::{Table, row, cell};
-
+use prettytable::{Table, row};
+use config::Config;
 
 #[derive(Parser)]
 struct Cli {
@@ -21,10 +22,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut priority = String::new();
     let mut index = String::new();
 
-    let db_conn = Db::new(String::from("todos.db")).unwrap();
+    let db_config = Config::new();
+    let db_conn = Db::new(db_config.db_path).unwrap();
     db_conn.create_table()?;
 
     let command = args.command;
+    println!("Welcome to Rust Todo App");
     match command.as_str() {
         "add" => {
             println!("Adding a new todo");
