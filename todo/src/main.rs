@@ -1,12 +1,10 @@
-mod db;
-mod todo;
-mod config;
+mod utils;
 
 use clap::Parser;
-use db::db::Db;
-use std::io::{self, Write};
 use prettytable::{Table, row};
-use config::Config;
+use std::io::{self, Write};
+use utils::config::Config;
+use utils::db::Db;
 
 #[derive(Parser)]
 struct Cli {
@@ -45,11 +43,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             io::stdin().read_line(&mut priority)?;
 
             let priority: i32 = priority.trim().parse()?;
-            println!("Task name: {}, Description: {}, Priority: {}", task_name.trim(), description.trim(), priority);
+            println!(
+                "Task name: {}, Description: {}, Priority: {}",
+                task_name.trim(),
+                description.trim(),
+                priority
+            );
 
             db_conn.add_todo(&task_name.trim(), &description.trim(), priority)?;
             println!("Todo added successfully");
-        },
+        }
         "remove" => {
             println!("Removing a todo");
             print!("Enter the index of the todo to remove: ");
@@ -58,8 +61,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let index_: i32 = index.trim().parse()?;
             db_conn.remove_todo(index_)?;
-
-        },
+        }
         "list" => {
             println!("Listing all todos");
             let todos = db_conn.get_todos()?;
@@ -71,10 +73,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 table.add_row(row![todo.id, todo.name, todo.description, todo.priority]);
             }
             table.printstd();
-        },
+        }
         "help" => {
             println!("Help");
-        },
+        }
         _ => {
             println!("Unknown command");
         }

@@ -1,4 +1,4 @@
-const DB_PATH: &str = "~/.config/todo.db";
+const DB_PATH: &str = "todo.db";
 
 pub struct Config {
     pub db_path: String,
